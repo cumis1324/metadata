@@ -1,9 +1,9 @@
-const cors = require('cors');
 const express = require('express');
 const axios = require('axios');
 const { exec } = require('child_process');
 const app = express();
 const port = process.env.PORT || 3000;
+const cors = require('cors');
 
 app.use(cors());
 app.use(express.json());
@@ -30,27 +30,28 @@ app.get('/video-metadata', async (req, res) => {
           return res.status(500).json({ error: 'Failed to process video' });
         }
 
-      // Parse FFmpeg JSON output
-      let metadata;
-      try {
-        metadata = JSON.parse(stdout);
-      } catch (parseError) {
-        console.error(`Failed to parse FFmpeg output: ${parseError.message}`);
-        return res.status(500).json({ error: 'Failed to process video' });
-      }
+        // Parse FFmpeg JSON output
+        let metadata;
+        try {
+          metadata = JSON.parse(stdout);
+        } catch (parseError) {
+          console.error(`Failed to parse FFmpeg output: ${parseError.message}`);
+          return res.status(500).json({ error: 'Failed to process video' });
+        }
 
-      // Extract subtitles information
-      const subtitles = (metadata.streams || []).filter(stream => stream.codec_type === 'subtitle');
-      const formattedSubtitles = subtitles.map(subtitle => ({
-        label: subtitle.tags ? subtitle.tags.language : 'Unknown',
-        language: subtitle.tags ? subtitle.tags.language : 'unknown',
-        src: videoUrl // Adjust this if subtitles are external
-      }));
+        // Extract subtitles information
+        const subtitles = (metadata.streams || []).filter(stream => stream.codec_type === 'subtitle');
+        const formattedSubtitles = subtitles.map(subtitle => ({
+          label: subtitle.tags ? subtitle.tags.language : 'Unknown',
+          language: subtitle.tags ? subtitle.tags.language : 'unknown',
+          src: videoUrl // Adjust this if subtitles are external
+        }));
 
-      res.json({ subtitles: formattedSubtitles });
-    });
+        // Send response with CORS headers
+        res.header('Access-Control-Allow-Origin', '*'); // Replace with specific origin if needed
+        res.json({ subtitles: formattedSubtitles });
+      });
   } catch (error) {
-    console.log(`FFmpeg command: ffmpeg -i pipe:0 -v quiet -print_format json -show_format -show_streams`);
     console.error(`Error fetching video metadata: ${error.message}`);
     res.status(500).json({ error: 'Failed to fetch video metadata' });
   }
