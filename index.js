@@ -2,9 +2,10 @@ const { exec } = require('child_process');
 const axios = require('axios');
 const fs = require('fs');
 const { promisify } = require('util');
-const execPromise = promisify(exec);
 const path = require('path');
+const cors = require('cors');
 
+const execPromise = promisify(exec);
 const ffmpegPath = path.join(__dirname, 'ffmpeg');
 
 async function downloadFFmpeg() {
@@ -52,17 +53,26 @@ async function getVideoMetadata(videoUrl) {
   });
 }
 
-module.exports = async (req, res) => {
-  const videoUrl = req.query.url;
+// Create a CORS middleware function
+const corsMiddleware = cors({
+  origin: '*',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+});
 
-  if (!videoUrl) {
-    return res.status(400).json({ error: 'Missing video URL' });
-  }
+module.exports = (req, res) => {
+  corsMiddleware(req, res, async () => {
+    const videoUrl = req.query.url;
 
-  try {
-    const metadata = await getVideoMetadata(videoUrl);
-    res.json(metadata);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    if (!videoUrl) {
+      return res.status(400).json({ error: 'Missing video URL' });
+    }
+
+    try {
+      const metadata = await getVideoMetadata(videoUrl);
+      res.json(metadata);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 };
