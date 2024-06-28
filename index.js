@@ -53,7 +53,6 @@ async function getVideoMetadata(videoUrl) {
   });
 }
 
-// Create a CORS middleware function
 const corsMiddleware = cors({
   origin: '*',
   methods: ['GET', 'POST'],
@@ -61,6 +60,7 @@ const corsMiddleware = cors({
 });
 
 module.exports = (req, res) => {
+  console.log('Request received:', req.query);
   corsMiddleware(req, res, async () => {
     const videoUrl = req.query.url;
 
@@ -72,6 +72,7 @@ module.exports = (req, res) => {
       const metadata = await getVideoMetadata(videoUrl);
       res.json(metadata);
     } catch (error) {
+      console.error(`Error processing video metadata: ${error.message}`);
       res.status(500).json({ error: error.message });
     }
   });
