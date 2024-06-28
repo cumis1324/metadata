@@ -5,10 +5,12 @@ const fs = require('fs');
 const { promisify } = require('util');
 const stream = require('stream');
 const pipeline = promisify(stream.pipeline);
+const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
+const PORT = process.env.PORT || 5000;
+app.use(cors());
 // Function to download video to a temporary file
 const downloadVideo = async (url, path) => {
   const response = await axios({
