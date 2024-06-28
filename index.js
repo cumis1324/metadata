@@ -3,6 +3,10 @@ const axios = require('axios');
 const ffmpeg = require('fluent-ffmpeg');
 const app = express();
 const port = process.env.PORT || 3000;
+const cors = require('cors');
+
+app.use(cors());
+
 
 app.get('/video-metadata', async (req, res) => {
   const videoUrl = req.query.url;
