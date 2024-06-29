@@ -16,8 +16,10 @@ RUN mkdir -p /usr/src/app/ffmpeg && \
     tar -xf /usr/src/app/ffmpeg/jellyfin-ffmpeg.tar.xz -C /usr/src/app/ffmpeg --strip-components=1 && \
     rm /usr/src/app/ffmpeg/jellyfin-ffmpeg.tar.xz
 
-# Expose the port the app runs on
-EXPOSE 3000
 
 # Command to run the app
 CMD [ "node", "index.js" ]
+# Expose the port the app runs on
+EXPOSE 3000
+
+
