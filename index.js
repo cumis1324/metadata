@@ -6,24 +6,15 @@ const path = require('path');
 const cors = require('cors');
 
 const execPromise = promisify(exec);
-const ffmpegPath = path.join(__dirname, 'ffmpeg');
 
-async function downloadFFmpeg() {
-  if (!fs.existsSync(ffmpegPath)) {
-    console.log('Downloading FFmpeg...');
-    await execPromise('curl -L -o ffmpeg.zip https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz');
-    await execPromise('tar -xf ffmpeg.zip --strip-components=1 -C api');
-    console.log('FFmpeg downloaded and extracted');
-  }
-}
+// Update ffmpegPath to point to the jellyfin-ffmpeg executable in the Docker container
+const ffmpegPath = path.join(__dirname, 'ffmpeg/ffmpeg');
 
 async function getVideoMetadata(videoUrl) {
-  await downloadFFmpeg();
-
   const response = await axios.get(videoUrl, { responseType: 'arraybuffer' });
 
   return new Promise((resolve, reject) => {
-    const process = exec(`${ffmpegPath}/ffmpeg -i pipe:0 -v quiet -print_format json -show_format -show_streams`, { maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
+    const process = exec(`${ffmpegPath} -i pipe:0 -v quiet -print_format json -show_format -show_streams`, { maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
       if (error) {
         console.error(`Failed to process video: ${error.message}`);
         console.error(`FFmpeg stderr: ${stderr}`);
