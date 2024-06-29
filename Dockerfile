@@ -15,7 +15,7 @@ COPY . .
 
 # Download and install jellyfin-ffmpeg
 RUN mkdir -p /usr/src/app/ffmpeg && \
-    curl -L -o /usr/src/app/ffmpeg/jellyfin-ffmpeg.tar.xz https://repo.jellyfin.org/releases/ffmpeg/jellyfin-ffmpeg-release-4.4.1-1-linux-amd64.tar.xz && \
+    curl -L -o /usr/src/app/ffmpeg/jellyfin-ffmpeg.tar.xz https://repo.jellyfin.org/files/ffmpeg/linux/latest-6.x/amd64/jellyfin-ffmpeg_6.0.1-7_portable_linux64-gpl.tar.xz && \
     tar -xf /usr/src/app/ffmpeg/jellyfin-ffmpeg.tar.xz -C /usr/src/app/ffmpeg --strip-components=1 && \
     rm /usr/src/app/ffmpeg/jellyfin-ffmpeg.tar.xz
 
