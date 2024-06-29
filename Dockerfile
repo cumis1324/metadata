@@ -22,8 +22,5 @@ RUN mkdir -p /usr/src/app/ffmpeg && \
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Define environment variable
-ENV NODE_ENV production
-
 # Command to run the app
 CMD [ "node", "index.js" ]
