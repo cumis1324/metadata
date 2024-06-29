@@ -5,13 +5,10 @@ FROM node:22
 WORKDIR /usr/src/app
 
 # Copy the package.json and package-lock.json
-COPY package*.json ./
+COPY . .
 
 # Install dependencies
 RUN npm install
-
-# Copy the rest of the application code
-COPY . .
 
 # Download and install jellyfin-ffmpeg
 RUN mkdir -p /usr/src/app/ffmpeg && \
